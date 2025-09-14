@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\PurchaseController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -11,5 +13,11 @@ Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('products', ProductController::class);
+    Route::resource('purchases', PurchaseController::class)->only(['index', 'show']);
+});
+
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';
